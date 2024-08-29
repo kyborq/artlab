@@ -14,7 +14,7 @@ RUN bun install
 COPY . .
 
 # Expose the port the server runs on
-EXPOSE 3000
+EXPOSE 3024
 
 # Start the server
 CMD ["bun", "run", "dev"]

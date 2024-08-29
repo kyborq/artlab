@@ -65,7 +65,7 @@ const app = new Elysia({
     })
   )
   .use(Logestic.preset("common"))
-  .listen(3000);
+  .listen(3024);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`

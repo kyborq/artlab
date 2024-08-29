@@ -19,7 +19,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
     environment:
-      - VITE_WS_URL=ws://server:3000/ws
+      - VITE_WS_URL=ws://server:3024/ws
     ports:
       - "4173:4173"
     depends_on:
@@ -32,7 +32,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3024:3024"
     networks:
       - "web_server"
 
