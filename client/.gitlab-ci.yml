@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+
+build-job:
+  stage: build
+  image: node:22.2.0
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    expire_in: 30 days
+    paths:
+    - dist/
+
+deploy-job:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  dependencies:
+    - build-job
+  tags:
+    - deploy
+    - dev
+  before_script:
+    - CHCP 65001
+  script:
+    - Remove-Item C:\inetpub\wwwroot\market_dev\* -Recurse -Force
+    - Copy-Item -Path dist\* -Destination C:\inetpub\wwwroot\market_dev\ -Recurse
+  retry: 2

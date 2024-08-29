@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - client
+      - server
+    networks:
+      - "web_client"
+      - "web_server"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    environment:
+      - VITE_WS_URL=ws://server:3000/ws
+    ports:
+      - "4173:4173"
+    depends_on:
+      - server
+    networks:
+      - "web_client"
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - "web_server"
+
+networks:
+  web_client:
+  web_server:

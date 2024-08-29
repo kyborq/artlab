@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/index.ts"
+  },
+  "dependencies": {
+    "@eajr/elylog": "^1.0.1",
+    "@elysiajs/cron": "^1.1.0",
+    "elysia": "latest",
+    "logestic": "^1.2.3",
+    "uniqolor": "^1.1.1"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "module": "src/index.js"
+}
