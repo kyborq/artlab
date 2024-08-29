@@ -55,15 +55,6 @@ const app = new Elysia({
     },
   })
   .get("/", () => "hello")
-  .use(
-    cron({
-      name: "trash-collector",
-      pattern: Patterns.everyMinute(),
-      run: () => {
-        removeExpiredLines();
-      },
-    })
-  )
   .use(Logestic.preset("common"))
   .listen(3024);
 
