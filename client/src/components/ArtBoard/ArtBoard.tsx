@@ -16,6 +16,7 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [lines, setLines] = useState<Array<TLine>>(drawings);
   const [isPanning, setIsPanning] = useState(false);
+  const [isDrawing, setIsDrawing] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [recentlyPanned, setRecentlyPanned] = useState(false);
@@ -99,6 +100,12 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
       };
 
       const draw = (e: MouseEvent | TouchEvent) => {
+        if (isPanning) return; // Prevent drawing while panning
+
+        if ((e as TouchEvent).touches.length === 2) return;
+
+        if (!isDrawing) return;
+
         const { clientX, clientY } = (e as TouchEvent).touches
           ? (e as TouchEvent).touches[0]
           : (e as MouseEvent);
@@ -181,6 +188,7 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
         (event as TouchEvent).touches?.length === 2
       ) {
         setIsPanning(true);
+        setIsDrawing(false); // Ensure drawing is not active while panning
         const { clientX, clientY } = (event as TouchEvent).touches
           ? (event as TouchEvent).touches[0]
           : (event as MouseEvent);
@@ -207,8 +215,11 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
 
   const stopPanning = useCallback(() => {
     setIsPanning(false);
+    setIsDrawing(true);
     setRecentlyPanned(true);
-    setTimeout(() => setRecentlyPanned(false), 100);
+    setTimeout(() => {
+      setRecentlyPanned(false);
+    }, 100);
   }, []);
 
   useEffect(() => {
@@ -223,7 +234,7 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
       };
 
       const handleTouchStart = (event: TouchEvent) => {
-        if (event.touches.length === 2) {
+        if (event.touches.length >= 2) {
           startPanning(event);
         } else {
           startDrawing(event);
