@@ -3,7 +3,7 @@ import { useArtStore } from "@/store/useArtStore";
 import { useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
 
-const WS_URL = `ws://${window.location.hostname}:3024/api/ws`;
+const WS_URL = `ws://${window.location.hostname}/api/ws`;
 
 export const Root = () => {
   const { lastJsonMessage, sendJsonMessage } = useWebSocket<{
