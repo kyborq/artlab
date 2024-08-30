@@ -102,7 +102,7 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
       const draw = (e: MouseEvent | TouchEvent) => {
         if (isPanning) return; // Prevent drawing while panning
 
-        if ((e as TouchEvent).touches.length === 2) return;
+        if ("touches" in e && e.touches.length === 2) return;
 
         if (!isDrawing) return;
 
