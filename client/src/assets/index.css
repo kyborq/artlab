@@ -1,9 +1,14 @@
-body {
-  overscroll-behavior-y: none;
+html {
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 #root {
   height: 100dvh;
   display: flex;
   overflow: hidden;
+}
+
+body {
+  margin: 0;
 }

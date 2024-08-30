@@ -134,7 +134,7 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
         canvasRef.current?.removeEventListener("touchmove", draw);
         canvasRef.current?.removeEventListener("touchend", stop);
 
-        const simplifiedPositions = simplifyLine(newLine.positions, 4);
+        const simplifiedPositions = simplifyLine(newLine.positions, 2);
         const optimizedLine = { ...newLine, positions: simplifiedPositions };
 
         setLines((prevLines) => [...prevLines, optimizedLine]);
@@ -214,31 +214,44 @@ export const ArtBoard = ({ drawings, penColor, onDrawEnd }: Props) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
-      canvas.addEventListener("mousedown", startDrawing);
-      canvas.addEventListener("touchstart", startDrawing);
+      const handleMouseDown = (event: MouseEvent) => {
+        if (event.button === 1) {
+          startPanning(event);
+        } else {
+          startDrawing(event);
+        }
+      };
+
+      const handleTouchStart = (event: TouchEvent) => {
+        if (event.touches.length === 2) {
+          startPanning(event);
+        } else {
+          startDrawing(event);
+        }
+      };
+
+      canvas.addEventListener("mousedown", handleMouseDown);
+      canvas.addEventListener("touchstart", handleTouchStart);
       canvas.addEventListener("contextmenu", handleRightClick);
-      canvas.addEventListener("mousedown", startPanning);
-      canvas.addEventListener("touchstart", startPanning);
       canvas.addEventListener("mousemove", pan);
       canvas.addEventListener("touchmove", pan);
       canvas.addEventListener("mouseup", stopPanning);
       canvas.addEventListener("mouseleave", stopPanning);
       canvas.addEventListener("touchend", stopPanning);
+
+      return () => {
+        if (canvas) {
+          canvas.removeEventListener("mousedown", handleMouseDown);
+          canvas.removeEventListener("touchstart", handleTouchStart);
+          canvas.removeEventListener("contextmenu", handleRightClick);
+          canvas.removeEventListener("mousemove", pan);
+          canvas.removeEventListener("touchmove", pan);
+          canvas.removeEventListener("mouseup", stopPanning);
+          canvas.removeEventListener("mouseleave", stopPanning);
+          canvas.removeEventListener("touchend", stopPanning);
+        }
+      };
     }
-    return () => {
-      if (canvas) {
-        canvas.removeEventListener("mousedown", startDrawing);
-        canvas.removeEventListener("touchstart", startDrawing);
-        canvas.removeEventListener("contextmenu", handleRightClick);
-        canvas.removeEventListener("mousedown", startPanning);
-        canvas.removeEventListener("touchstart", startPanning);
-        canvas.removeEventListener("mousemove", pan);
-        canvas.removeEventListener("touchmove", pan);
-        canvas.removeEventListener("mouseup", stopPanning);
-        canvas.removeEventListener("mouseleave", stopPanning);
-        canvas.removeEventListener("touchend", stopPanning);
-      }
-    };
   }, [startDrawing, startPanning, pan, stopPanning, recentlyPanned]);
 
   return (
